@@ -4,7 +4,7 @@ import 'ui/directives/json_input';
 import '../filter_editor';
 import { filterAppliedAndUnwrap } from 'ui/filter_bar/lib/filter_applied_and_unwrap';
 import { FilterBarLibMapAndFlattenFiltersProvider } from 'ui/filter_bar/lib/map_and_flatten_filters';
-import { FilterBarLibMapFlattenAndWrapFiltersProvider } from 'ui/filter_bar/lib/map_flatten_and_wrap_filters';
+//import { FilterBarLibMapFlattenAndWrapFiltersProvider } from 'ui/filter_bar/lib/map_flatten_and_wrap_filters';
 import { FilterBarLibExtractTimeFilterProvider } from 'ui/filter_bar/lib/extract_time_filter';
 import { FilterBarLibFilterOutTimeBasedFilterProvider } from 'ui/filter_bar/lib/filter_out_time_based_filter';
 import { FilterBarLibChangeTimeFilterProvider } from 'ui/filter_bar/lib/change_time_filter';
@@ -19,7 +19,7 @@ const module = uiModules.get('kibana');
 
 module.directive('filterBar', function (Private, Promise, getAppState) {
   const mapAndFlattenFilters = Private(FilterBarLibMapAndFlattenFiltersProvider);
-  const mapFlattenAndWrapFilters = Private(FilterBarLibMapFlattenAndWrapFiltersProvider);
+  //const mapFlattenAndWrapFilters = Private(FilterBarLibMapFlattenAndWrapFiltersProvider);
   const extractTimeFilter = Private(FilterBarLibExtractTimeFilterProvider);
   const filterOutTimeBasedFilter = Private(FilterBarLibFilterOutTimeBasedFilterProvider);
   const changeTimeFilter = Private(FilterBarLibChangeTimeFilterProvider);
@@ -106,25 +106,26 @@ module.directive('filterBar', function (Private, Promise, getAppState) {
       $scope.$watch('state.$newFilters', function (filters) {
         if (!filters) return;
 
+        // PAC Feature: apply multiple filters automatically...
         // If filters is not undefined and the length is greater than
         // one we need to set the newFilters attribute and allow the
         // users to decide what they want to apply.
-        if (filters.length > 1) {
-          return mapFlattenAndWrapFilters(filters)
-          .then(function (results) {
-            extractTimeFilter(results).then(function (filter) {
-              $scope.changeTimeFilter = filter;
-            });
-            return results;
-          })
-          .then(filterOutTimeBasedFilter)
-          .then(function (results) {
-            $scope.newFilters = results;
-          });
-        }
+        // if (filters.length > 1) {
+        //   return mapFlattenAndWrapFilters(filters)
+        //   .then(function (results) {
+        //     extractTimeFilter(results).then(function (filter) {
+        //       $scope.changeTimeFilter = filter;
+        //     });
+        //     return results;
+        //   })
+        //   .then(filterOutTimeBasedFilter)
+        //   .then(function (results) {
+        //     $scope.newFilters = results;
+        //   });
+        // }
 
         // Just add single filters to the state.
-        if (filters.length === 1) {
+        if (filters.length >= 1) {
           Promise.resolve(filters).then(function (filters) {
             extractTimeFilter(filters)
             .then(function (timeFilter) {
